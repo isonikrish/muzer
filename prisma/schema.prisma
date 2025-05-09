@@ -17,12 +17,14 @@ model User {
 }
 
 model Stream {
-  id      Int        @id @default(autoincrement())
-  type    StreamType
-  active  Boolean    @default(true)
-  userId  Int
-  user    User       @relation(fields: [userId], references: [id])
-  upvotes Upvote[]
+  id          Int        @id @default(autoincrement())
+  type        StreamType
+  url         String
+  extractedId String
+  active      Boolean    @default(true)
+  userId      Int
+  user        User       @relation(fields: [userId], references: [id])
+  upvotes     Upvote[]
 }
 
 model Upvote {
