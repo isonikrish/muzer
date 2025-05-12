@@ -11,20 +11,30 @@ model User {
   id       Int      @id @default(autoincrement())
   email    String   @unique
   provider Provider
-  role     Role
-  streams  Stream[]
-  upvotes  Upvote[]
+
+  streams Stream[]
+  upvotes Upvote[]
 }
 
 model Stream {
-  id          Int        @id @default(autoincrement())
-  type        StreamType
-  url         String
-  extractedId String
-  active      Boolean    @default(true)
-  userId      Int
-  user        User       @relation(fields: [userId], references: [id])
-  upvotes     Upvote[]
+  id           Int           @id @default(autoincrement())
+  type         StreamType
+  url          String
+  extractedId  String
+  title        String
+  thumbnail    String?
+  active       Boolean       @default(true)
+  userId       Int
+  user         User          @relation(fields: [userId], references: [id])
+  upvotes      Upvote[]
+  activeStream CurrentStream?
+}
+
+model CurrentStream {
+  userId       Int    @id
+
+  streamId Int @unique
+  stream    Stream?  @relation(fields: [streamId], references: [id], onDelete: Cascade)
 }
 
 model Upvote {
@@ -32,7 +42,7 @@ model Upvote {
   userId   Int
   streamId Int
   user     User   @relation(fields: [userId], references: [id])
-  stream   Stream @relation(fields: [streamId], references: [id])
+  stream   Stream @relation(fields: [streamId], references: [id], onDelete: Cascade)
 
   @@unique([userId, streamId])
 }
@@ -40,11 +50,6 @@ model Upvote {
 enum StreamType {
   Spotify
   Youtube
-}
-
-enum Role {
-  Streamer
-  EndUser
 }
 
 enum Provider {
